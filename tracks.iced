@@ -6,8 +6,8 @@ pg = require("pg")
 echoNestApiKey = "3QUQOE6XTIZ6BFUL5";
 
 rdio = require('rdio')({
-	rdio_api_key: "2dmfysv2aaz972mjczvwvzyn",
-	rdio_api_shared: "bpP2UZyhZA",
+	rdio_api_key: "4bmgdzt2b27qbktxr4kseyn4",
+	rdio_api_shared: "8U757b9eWC",
 	callback_url: "http://localhost:8000"
 })
  
@@ -39,6 +39,7 @@ this.search = (req,res) ->
 		text:"SELECT token, secret from oauth_tokens where roomid = $1"
 		values: [result.rows[0].currentroom]
 	, defer err, result
+	
 	
 	secret = result.rows[0].secret
 	token = result.rows[0].token

@@ -5,7 +5,6 @@ url = require("url")
 this.join = (req,res) ->  
 	settings.doGlobals req,res
 	
-
 	await pg.connect settings.pgConnectionString, defer client, err
 	
 	
@@ -13,6 +12,8 @@ this.join = (req,res) ->
 		text: "SELECT COUNT(*) as rowcount FROM rooms where roomid = $1"
 		values: [req.body.roomid]
 	, defer err, result
+	
+	console.log err
 	
 	rowExists = result.rows[0].rowcount == 1;
 	
@@ -27,6 +28,9 @@ this.join = (req,res) ->
 			text: "UPDATE users set currentroom = $1 where userid = $2"
 			values: [req.body.roomid, req.jukeboxUser]
 		, defer err, result
+		
+		
+		
 		
 		if req.body.rdioToken
 			await client.query
@@ -46,20 +50,24 @@ this.join = (req,res) ->
 		req.session.currentRoomId = req.body.roomid
 		playbackToken = null
 		
-		if roomresult.rows[0].master == parseInt(req.jukeboxUser)
-		
-			oa = settings.makeRdioProvider()
-		
-			await client.query
-				text: "SELECT secret from oauth_tokens WHERE token = $1"
-				values:[req.userRdioToken]
-			, defer err, result
-		
-			await oa.getPlaybackToken req.userRdioToken, result.rows[0].secret, "localhost", defer err, rdiores
+		if roomresult.rows[0].master == parseInt(req.jukeboxUser) && req.userRdioToken
+			console.log "getting token"
 			
-			console.log rdiores
+			if req.session.rdioToken
+				playbackToken = req.session.rdioToken
+			else
+				oa = settings.makeRdioProvider()
+		
+				await client.query
+					text: "SELECT secret from oauth_tokens WHERE token = $1"
+					values:[req.userRdioToken]
+				, defer err, result
+		
+				await oa.getPlaybackToken req.userRdioToken, result.rows[0].secret, req.headers.host.split(":")[0], defer err, rdiores
 			
-			playbackToken = JSON.parse(rdiores).result
+				console.log rdiores
+			
+				playbackToken = JSON.parse(rdiores).result
 			
 		
 		res.end JSON.stringify
@@ -118,8 +126,8 @@ this.create = (req,res) ->
 	await settings.connectDb defer db
 
 	await db.query
-		text:"INSERT INTO rooms (name, latitude, longitude) values ($1,1,1) returning roomid"
-		values: [req.param("name")]
+		text:"INSERT INTO rooms (name, latitude, longitude,master) values ($1,1,1,$2) returning roomid"
+		values: [req.param("name"), req.jukeboxUser]
 	, defer err, result
 	
 	newRowId = result.rows[0].roomid
@@ -141,11 +149,18 @@ this.list = (req,res) ->
 	
 	res.end JSON.stringify result.rows
 	
+this.getPlaylist = (req,res) ->
+	settings.doGlobals req,res
+	await settings.connectDb defer db
+	await getPlaylist req.body.roomid, db, defer result
+	res.end JSON.stringify result
+
 this.queueTrack = (req,res) ->
 	settings.doGlobals req,res
 	await settings.connectDb defer db
 	
 	trackId = req.body.trackid
+	
 	
 	await db.query
 		text:"SELECT totalcredits - (SELECT count(*) from playlistvotes where userid = users.userid) as creditsleft  from users where userid = $1"
@@ -169,6 +184,22 @@ this.queueTrack = (req,res) ->
 	, defer err, result
 	
 	room = result.rows[0].currentroom
+	
+	###
+	await db.query
+		text:"SELECT count(*) as c from playlistvotes pv inner join room_playlists rm on pv.playlistitemid = rm.playlistitemid where userid = $1 and trackid = $2 and roomid = $3 and not playstatus = 2"
+		values:[req.jukeboxUser, trackId, room]
+	, defer err, alreadyVoteResult
+	 
+	console.log alreadyVoteResult.rows[0].c
+	
+	if alreadyVoteResult.rows[0].c > 0
+		res.end JSON.stringify
+			success:false
+			reason: "alreadyvoted"
+		return;
+	###
+
 	
 	await db.query
 		text:"SELECT playlistitemid from room_playlists where trackid = $1 and roomid = $2"

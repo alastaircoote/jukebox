@@ -24,6 +24,7 @@ app.post("/room/join", rooms.join);
 app.post("/room/create", rooms.create);
 app.get("/room/list", rooms.list);
 app.post("/room/queuetrack", rooms.queueTrack); 
+app.post("/room/getplaylist", rooms.getPlaylist); 
 app.post("/room/updatecurrenttrack", rooms.updateCurrentTrack); 
 app.post("/user/checkCredits", user.checkCredits);
 app.post("/user/create", user.create);

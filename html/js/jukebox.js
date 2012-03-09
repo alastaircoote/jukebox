@@ -53,13 +53,15 @@
     },
     trigger: function(ev, data) {
       var func, _i, _len, _ref, _results;
-      _ref = jukebox.boundFuncs[ev];
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        func = _ref[_i];
-        _results.push(func(data));
+      if (jukebox.boundFuncs[ev]) {
+        _ref = jukebox.boundFuncs[ev];
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          func = _ref[_i];
+          _results.push(func(data));
+        }
+        return _results;
       }
-      return _results;
     }
   };
 
@@ -102,7 +104,7 @@
                   return ret = arguments[0];
                 };
               })(),
-              lineno: 37
+              lineno: 38
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -130,7 +132,7 @@
                 return ret = arguments[0];
               };
             })(),
-            lineno: 46
+            lineno: 47
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -187,11 +189,11 @@
                   return ret = arguments[0];
                 };
               })(),
-              lineno: 93
+              lineno: 94
             }));
             __iced_deferrals._fulfill();
           })(function() {
-            json = JSON.parse(ret);
+            json = ret;
             date = new Date();
             date.setTime(date.getTime + (30 * 24 * 60 * 60 * 1000));
             document.cookie = "rdioToken=" + json.token + "; expires=" + date.toGMTString() + "; path=/";
@@ -217,14 +219,14 @@
                 return ret = arguments[0];
               };
             })(),
-            lineno: 107
+            lineno: 108
           }));
           __iced_deferrals._fulfill();
         })(function() {
           date = new Date();
           date.setTime(date.getTime + (30 * 24 * 60 * 60 * 1000));
-          document.cookie = "rdioAccessToken=" + JSON.parse(ret).token + "; expires=" + date.toGMTString() + "; path=/";
-          return window.location = "https://www.rdio.com/oauth/authorize?oauth_token=" + JSON.parse(ret).token;
+          document.cookie = "rdioAccessToken=" + ret.token + "; expires=" + date.toGMTString() + "; path=/";
+          return window.location = "https://www.rdio.com/oauth/authorize?oauth_token=" + ret.token;
         });
       });
     }
@@ -232,6 +234,7 @@
 
   jukebox.Room = {
     currentRoomId: null,
+    refreshInterval: null,
     join: function(roomid, retFunc) {
       var asJson, ret, ___iced_passed_deferral, __iced_deferrals,
         _this = this;
@@ -251,20 +254,48 @@
               return ret = arguments[0];
             };
           })(),
-          lineno: 121
+          lineno: 123
         }));
         __iced_deferrals._fulfill();
       })(function() {
         asJson = ret;
         _this.currentRoomId = asJson.roomid;
-        retFunc({
+        jukebox.Player.updatePlaylist(asJson.tracks);
+        jukebox.trigger("playlistUpdated", asJson.tracks);
+        if (asJson.playbackToken) jukebox.Player.load(asJson.playbackToken);
+        jukebox.Room.refreshInterval = setInterval(function() {
+          return jukebox.Room.refreshPlaylist();
+        }, 5000);
+        return retFunc({
           roomid: asJson.roomid,
           tracks: asJson.tracks,
           name: asJson.name
         });
-        jukebox.Player.updatePlaylist(asJson.tracks);
-        jukebox.trigger("playlistUpdated", asJson.tracks);
-        if (asJson.playbackToken) return jukebox.Player.load(asJson.playbackToken);
+      });
+    },
+    refreshPlaylist: function() {
+      var ret, ___iced_passed_deferral, __iced_deferrals,
+        _this = this;
+      ___iced_passed_deferral = iced.findDeferral(arguments);
+      (function(__iced_k) {
+        __iced_deferrals = new iced.Deferrals(__iced_k, {
+          parent: ___iced_passed_deferral,
+          filename: "/Users/alastair/Projects/jukebox/html/js/jukebox.iced",
+          funcname: "refreshPlaylist"
+        });
+        jukebox.post("room/getplaylist", {
+          roomid: jukebox.Room.currentRoomId
+        }, __iced_deferrals.defer({
+          assign_fn: (function() {
+            return function() {
+              return ret = arguments[0];
+            };
+          })(),
+          lineno: 143
+        }));
+        __iced_deferrals._fulfill();
+      })(function() {
+        return jukebox.trigger("playlistUpdated", ret);
       });
     },
     create: function(opts, retFunc) {
@@ -285,7 +316,7 @@
                   return newUserObj = arguments[0];
                 };
               })(),
-              lineno: 139
+              lineno: 150
             }));
             __iced_deferrals._fulfill();
           })(__iced_k);
@@ -307,7 +338,7 @@
                 return ret = arguments[0];
               };
             })(),
-            lineno: 140
+            lineno: 151
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -331,7 +362,7 @@
               return ret = arguments[0];
             };
           })(),
-          lineno: 145
+          lineno: 156
         }));
         __iced_deferrals._fulfill();
       })(function() {
@@ -356,10 +387,14 @@
               return ret = arguments[0];
             };
           })(),
-          lineno: 150
+          lineno: 161
         }));
         __iced_deferrals._fulfill();
       })(function() {
+        console.log(ret);
+        if (ret.success === false && ret.reason === "alreadyvoted") {
+          alert("You already voted for this track!");
+        }
         retFunc();
         jsoned = ret;
         if (jsoned.tracks) jukebox.trigger("playlistUpdated", jsoned.tracks);
@@ -387,7 +422,7 @@
               return ret = arguments[0];
             };
           })(),
-          lineno: 161
+          lineno: 176
         }));
         __iced_deferrals._fulfill();
       })(function() {
@@ -404,7 +439,6 @@
     currentTrackId: null,
     changePending: false,
     load: function(playbackToken) {
-      console.log("loading " + playbackToken);
       $('#api').bind('ready.rdio', function() {
         jukebox.Player.playerLoaded = true;
         jukebox.bind("playlistUpdated", jukebox.Player.updatePlaylist);
@@ -421,7 +455,6 @@
         var d, newTracks, ___iced_passed_deferral, __iced_deferrals,
           _this = this;
         ___iced_passed_deferral = iced.findDeferral(arguments);
-        console.log(["track", playingTrack]);
         if (playingTrack !== null && playingTrack.key === jukebox.Player.currentTrackId) {
           console.log("sametrack");
           return;
@@ -443,7 +476,6 @@
           console.log("seeking ahead");
           return $('#api').rdio().seek(playingTrack.duration - 10);
         });
-        console.log("sdfsdf");
         (function(__iced_k) {
           __iced_deferrals = new iced.Deferrals(__iced_k, {
             parent: ___iced_passed_deferral,
@@ -459,19 +491,23 @@
                 return d = arguments[1];
               };
             })(),
-            lineno: 214
+            lineno: 225
           }));
           __iced_deferrals._fulfill();
         })(function() {
           jukebox.Player.currentTrackId = playingTrack.key;
-          return console.log([newTracks, d]);
+          console.log([newTracks, d]);
+          return jukebox.trigger("playlistUpdated", newTracks);
         });
       });
       return $('#api').rdio(playbackToken);
     },
     updatePlaylist: function(playlist) {
       console.log("playlist");
-      return jukebox.Player.playlistData = playlist;
+      jukebox.Player.playlistData = playlist;
+      if (jukebox.Player.lastPlayState === 2) {
+        return $(this).rdio().play(playlist[0].trackid);
+      }
     }
   };
 

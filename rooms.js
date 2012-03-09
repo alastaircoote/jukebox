@@ -64,7 +64,7 @@
             return err = arguments[1];
           };
         })(),
-        lineno: 11
+        lineno: 10
       }));
       __iced_deferrals._fulfill();
     })(function() {
@@ -84,10 +84,11 @@
               return result = arguments[1];
             };
           })(),
-          lineno: 16
+          lineno: 15
         }));
         __iced_deferrals._fulfill();
       })(function() {
+        console.log(err);
         rowExists = result.rows[0].rowcount === 1;
         if (!rowExists) {
           res.contentType("application/json");
@@ -112,7 +113,7 @@
                   return result = arguments[1];
                 };
               })(),
-              lineno: 30
+              lineno: 34
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -134,7 +135,7 @@
                         return result = arguments[1];
                       };
                     })(),
-                    lineno: 36
+                    lineno: 40
                   }));
                   __iced_deferrals._fulfill();
                 })(function() {
@@ -154,7 +155,7 @@
                           return roomresult = arguments[1];
                         };
                       })(),
-                      lineno: 43
+                      lineno: 47
                     }));
                     __iced_deferrals._fulfill();
                   })(__iced_k);
@@ -175,56 +176,63 @@
                       return tracksresult = arguments[0];
                     };
                   })(),
-                  lineno: 45
+                  lineno: 49
                 }));
                 __iced_deferrals._fulfill();
               })(function() {
                 req.session.currentRoomId = req.body.roomid;
                 playbackToken = null;
                 (function(__iced_k) {
-                  if (roomresult.rows[0].master === parseInt(req.jukeboxUser)) {
-                    oa = settings.makeRdioProvider();
+                  if (roomresult.rows[0].master === parseInt(req.jukeboxUser) && req.userRdioToken) {
+                    console.log("getting token");
                     (function(__iced_k) {
-                      __iced_deferrals = new iced.Deferrals(__iced_k, {
-                        parent: ___iced_passed_deferral,
-                        filename: "/Users/alastair/Projects/jukebox/rooms.iced",
-                        funcname: "join"
-                      });
-                      client.query({
-                        text: "SELECT secret from oauth_tokens WHERE token = $1",
-                        values: [req.userRdioToken]
-                      }, __iced_deferrals.defer({
-                        assign_fn: (function() {
-                          return function() {
-                            err = arguments[0];
-                            return result = arguments[1];
-                          };
-                        })(),
-                        lineno: 57
-                      }));
-                      __iced_deferrals._fulfill();
-                    })(function() {
-                      (function(__iced_k) {
-                        __iced_deferrals = new iced.Deferrals(__iced_k, {
-                          parent: ___iced_passed_deferral,
-                          filename: "/Users/alastair/Projects/jukebox/rooms.iced",
-                          funcname: "join"
+                      if (req.session.rdioToken) {
+                        return __iced_k(playbackToken = req.session.rdioToken);
+                      } else {
+                        oa = settings.makeRdioProvider();
+                        (function(__iced_k) {
+                          __iced_deferrals = new iced.Deferrals(__iced_k, {
+                            parent: ___iced_passed_deferral,
+                            filename: "/Users/alastair/Projects/jukebox/rooms.iced",
+                            funcname: "join"
+                          });
+                          client.query({
+                            text: "SELECT secret from oauth_tokens WHERE token = $1",
+                            values: [req.userRdioToken]
+                          }, __iced_deferrals.defer({
+                            assign_fn: (function() {
+                              return function() {
+                                err = arguments[0];
+                                return result = arguments[1];
+                              };
+                            })(),
+                            lineno: 65
+                          }));
+                          __iced_deferrals._fulfill();
+                        })(function() {
+                          (function(__iced_k) {
+                            __iced_deferrals = new iced.Deferrals(__iced_k, {
+                              parent: ___iced_passed_deferral,
+                              filename: "/Users/alastair/Projects/jukebox/rooms.iced",
+                              funcname: "join"
+                            });
+                            oa.getPlaybackToken(req.userRdioToken, result.rows[0].secret, req.headers.host.split(":")[0], __iced_deferrals.defer({
+                              assign_fn: (function() {
+                                return function() {
+                                  err = arguments[0];
+                                  return rdiores = arguments[1];
+                                };
+                              })(),
+                              lineno: 67
+                            }));
+                            __iced_deferrals._fulfill();
+                          })(function() {
+                            console.log(rdiores);
+                            return __iced_k(playbackToken = JSON.parse(rdiores).result);
+                          });
                         });
-                        oa.getPlaybackToken(req.userRdioToken, result.rows[0].secret, "localhost", __iced_deferrals.defer({
-                          assign_fn: (function() {
-                            return function() {
-                              err = arguments[0];
-                              return rdiores = arguments[1];
-                            };
-                          })(),
-                          lineno: 59
-                        }));
-                        __iced_deferrals._fulfill();
-                      })(function() {
-                        console.log(rdiores);
-                        return __iced_k(playbackToken = JSON.parse(rdiores).result);
-                      });
-                    });
+                      }
+                    })(__iced_k);
                   } else {
                     return __iced_k();
                   }
@@ -265,7 +273,7 @@
             return result = arguments[1];
           };
         })(),
-        lineno: 77
+        lineno: 85
       }));
       __iced_deferrals._fulfill();
     })(function() {
@@ -290,7 +298,7 @@
             return db = arguments[0];
           };
         })(),
-        lineno: 84
+        lineno: 92
       }));
       __iced_deferrals._fulfill();
     })(function() {
@@ -310,7 +318,7 @@
               return result = arguments[1];
             };
           })(),
-          lineno: 89
+          lineno: 97
         }));
         __iced_deferrals._fulfill();
       })(function() {
@@ -331,7 +339,7 @@
                 return result = arguments[1];
               };
             })(),
-            lineno: 96
+            lineno: 104
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -350,7 +358,7 @@
                   return result = arguments[1];
                 };
               })(),
-              lineno: 100
+              lineno: 108
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -370,7 +378,7 @@
                     return result = arguments[1];
                   };
                 })(),
-                lineno: 105
+                lineno: 113
               }));
               __iced_deferrals._fulfill();
             })(function() {
@@ -386,7 +394,7 @@
                       return tracksresult = arguments[0];
                     };
                   })(),
-                  lineno: 107
+                  lineno: 115
                 }));
                 __iced_deferrals._fulfill();
               })(function() {
@@ -422,7 +430,7 @@
             return db = arguments[0];
           };
         })(),
-        lineno: 119
+        lineno: 127
       }));
       __iced_deferrals._fulfill();
     })(function() {
@@ -433,8 +441,8 @@
           funcname: "create"
         });
         db.query({
-          text: "INSERT INTO rooms (name, latitude, longitude) values ($1,1,1) returning roomid",
-          values: [req.param("name")]
+          text: "INSERT INTO rooms (name, latitude, longitude,master) values ($1,1,1,$2) returning roomid",
+          values: [req.param("name"), req.jukeboxUser]
         }, __iced_deferrals.defer({
           assign_fn: (function() {
             return function() {
@@ -442,7 +450,7 @@
               return result = arguments[1];
             };
           })(),
-          lineno: 124
+          lineno: 132
         }));
         __iced_deferrals._fulfill();
       })(function() {
@@ -472,7 +480,7 @@
             return db = arguments[0];
           };
         })(),
-        lineno: 137
+        lineno: 145
       }));
       __iced_deferrals._fulfill();
     })(function() {
@@ -491,11 +499,53 @@
               return result = arguments[1];
             };
           })(),
-          lineno: 141
+          lineno: 149
         }));
         __iced_deferrals._fulfill();
       })(function() {
         return res.end(JSON.stringify(result.rows));
+      });
+    });
+  };
+
+  this.getPlaylist = function(req, res) {
+    var db, result, ___iced_passed_deferral, __iced_deferrals,
+      _this = this;
+    ___iced_passed_deferral = iced.findDeferral(arguments);
+    settings.doGlobals(req, res);
+    (function(__iced_k) {
+      __iced_deferrals = new iced.Deferrals(__iced_k, {
+        parent: ___iced_passed_deferral,
+        filename: "/Users/alastair/Projects/jukebox/rooms.iced",
+        funcname: "getPlaylist"
+      });
+      settings.connectDb(__iced_deferrals.defer({
+        assign_fn: (function() {
+          return function() {
+            return db = arguments[0];
+          };
+        })(),
+        lineno: 154
+      }));
+      __iced_deferrals._fulfill();
+    })(function() {
+      (function(__iced_k) {
+        __iced_deferrals = new iced.Deferrals(__iced_k, {
+          parent: ___iced_passed_deferral,
+          filename: "/Users/alastair/Projects/jukebox/rooms.iced",
+          funcname: "getPlaylist"
+        });
+        getPlaylist(req.body.roomid, db, __iced_deferrals.defer({
+          assign_fn: (function() {
+            return function() {
+              return result = arguments[0];
+            };
+          })(),
+          lineno: 155
+        }));
+        __iced_deferrals._fulfill();
+      })(function() {
+        return res.end(JSON.stringify(result));
       });
     });
   };
@@ -517,7 +567,7 @@
             return db = arguments[0];
           };
         })(),
-        lineno: 147
+        lineno: 161
       }));
       __iced_deferrals._fulfill();
     })(function() {
@@ -538,7 +588,7 @@
               return creditsResult = arguments[1];
             };
           })(),
-          lineno: 154
+          lineno: 169
         }));
         __iced_deferrals._fulfill();
       })(function() {
@@ -567,11 +617,26 @@
                 return result = arguments[1];
               };
             })(),
-            lineno: 170
+            lineno: 185
           }));
           __iced_deferrals._fulfill();
         })(function() {
           room = result.rows[0].currentroom;
+          /*
+          	await db.query
+          		text:"SELECT count(*) as c from playlistvotes pv inner join room_playlists rm on pv.playlistitemid = rm.playlistitemid where userid = $1 and trackid = $2 and roomid = $3 and not playstatus = 2"
+          		values:[req.jukeboxUser, trackId, room]
+          	, defer err, alreadyVoteResult
+          	 
+          	console.log alreadyVoteResult.rows[0].c
+          	
+          	if alreadyVoteResult.rows[0].c > 0
+          		res.end JSON.stringify
+          			success:false
+          			reason: "alreadyvoted"
+          		return;
+          */
+
           (function(__iced_k) {
             __iced_deferrals = new iced.Deferrals(__iced_k, {
               parent: ___iced_passed_deferral,
@@ -588,7 +653,7 @@
                   return trackresult = arguments[1];
                 };
               })(),
-              lineno: 177
+              lineno: 208
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -611,7 +676,7 @@
                         return trackresult = arguments[1];
                       };
                     })(),
-                    lineno: 185
+                    lineno: 216
                   }));
                   __iced_deferrals._fulfill();
                 })(function() {
@@ -638,7 +703,7 @@
                       return trackresult = arguments[1];
                     };
                   })(),
-                  lineno: 194
+                  lineno: 225
                 }));
                 __iced_deferrals._fulfill();
               })(function() {
@@ -654,7 +719,7 @@
                         return result = arguments[0];
                       };
                     })(),
-                    lineno: 197
+                    lineno: 228
                   }));
                   __iced_deferrals._fulfill();
                 })(function() {
@@ -678,7 +743,7 @@
                         return donotneedthis = arguments[1];
                       };
                     })(),
-                    lineno: 210
+                    lineno: 241
                   }));
                   __iced_deferrals._fulfill();
                 });

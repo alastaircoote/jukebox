@@ -84,7 +84,9 @@
   this.doGlobals = function(req, ret) {
     ret.header("Access-Control-Allow-Origin", "*");
     ret.header("Access-Control-Allow-Headers", "X-JukeboxUser, X-RdioToken");
-    req.userRdioToken = req.header("X-RdioToken");
+    if (req.header("X-RdioToken") !== 'null') {
+      req.userRdioToken = req.header("X-RdioToken");
+    }
     req.jukeboxUser = req.header("X-JukeboxUser");
     return ret.contentType("application/json");
   };
@@ -271,8 +273,8 @@
 
   this.makeRdioProvider = function() {
     return require('rdio')({
-      rdio_api_key: "2dmfysv2aaz972mjczvwvzyn",
-      rdio_api_shared: "bpP2UZyhZA",
+      rdio_api_key: "4bmgdzt2b27qbktxr4kseyn4",
+      rdio_api_shared: "8U757b9eWC",
       callback_url: "http://localhost:8000"
     }, oauth);
   };

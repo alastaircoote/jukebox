@@ -51,8 +51,8 @@
   echoNestApiKey = "3QUQOE6XTIZ6BFUL5";
 
   rdio = require('rdio')({
-    rdio_api_key: "2dmfysv2aaz972mjczvwvzyn",
-    rdio_api_shared: "bpP2UZyhZA",
+    rdio_api_key: "4bmgdzt2b27qbktxr4kseyn4",
+    rdio_api_shared: "8U757b9eWC",
     callback_url: "http://localhost:8000"
   });
 
@@ -146,7 +146,7 @@
                   return result = arguments[1];
                 };
               })(),
-              lineno: 42
+              lineno: 43
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -170,7 +170,7 @@
                     return results = arguments[1];
                   };
                 })(),
-                lineno: 50
+                lineno: 51
               }));
               __iced_deferrals._fulfill();
             })(function() {
@@ -207,7 +207,7 @@
                           return result = arguments[1];
                         };
                       })(),
-                      lineno: 69
+                      lineno: 70
                     }));
                     __iced_deferrals._fulfill();
                   })(__iced_k);
@@ -270,7 +270,7 @@
                   return result = arguments[1];
                 };
               })(),
-              lineno: 85
+              lineno: 86
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -335,7 +335,7 @@
                       return result = arguments[1];
                     };
                   })(),
-                  lineno: 104
+                  lineno: 105
                 }));
                 __iced_deferrals._fulfill();
               })(function() {

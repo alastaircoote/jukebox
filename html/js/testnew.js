@@ -122,11 +122,13 @@ $("#search").bind("submit", function(e) {
 })
 
 var trackToLi = function(track) {
-	var template = "<li><a href='' data-trackid='$1'><img class='albumart' src='$2'/><span>$3<span> - <span>$4</span>"
+	console.log (track)
+	var template = "<li><a href='' data-trackid='$1' data-playlistid='$5'><img class='albumart' src='$2'/><span>$3<span> - <span>$4</span>"
 		.replace("$1", track.trackid)
 		.replace("$2", track.image)
 		.replace("$3", track.artist)
 		.replace("$4", track.title)
+		.replace("$5", track.playlistitemid)
 	return $(template)
 }
 

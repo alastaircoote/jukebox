@@ -10,8 +10,9 @@ jukebox =
 		
 		jukebox.boundFuncs[ev].push(func)
 	trigger:(ev,data) ->
-		for func in jukebox.boundFuncs[ev]
-			func(data)
+		if (jukebox.boundFuncs[ev])
+			for func in jukebox.boundFuncs[ev]
+				func(data)
 		
 jukebox.User =
 	
@@ -91,7 +92,7 @@ jukebox.User =
 					
 			await jukebox.post "oauthtokenswitch", {token: token, verifier: verifier}, defer ret
 			
-			json = JSON.parse(ret)
+			json = ret
 			
 			date = new Date()
 			date.setTime(date.getTime + (30*24*60*60*1000))
@@ -108,31 +109,41 @@ jukebox.User =
 		date = new Date()
 		date.setTime(date.getTime + (30*24*60*60*1000))
 		
-		document.cookie = "rdioAccessToken=" + JSON.parse(ret).token + "; expires=" + date.toGMTString() + "; path=/"
+		document.cookie = "rdioAccessToken=" + ret.token + "; expires=" + date.toGMTString() + "; path=/"
 		
 		
 		
-		window.location = "https://www.rdio.com/oauth/authorize?oauth_token=" + JSON.parse(ret).token
+		window.location = "https://www.rdio.com/oauth/authorize?oauth_token=" + ret.token
 
 jukebox.Room =
 	currentRoomId: null,
+	refreshInterval: null,
 	join: (roomid, retFunc) ->
 		
 		await jukebox.post "room/join", {roomid: roomid, rdioToken: jukebox.rdioToken}, defer ret
 		asJson = ret
 		this.currentRoomId = asJson.roomid
-		retFunc
-			roomid: asJson.roomid
-			tracks: asJson.tracks
-			name: asJson.name
+		
 			
 		jukebox.Player.updatePlaylist(asJson.tracks)
 		jukebox.trigger("playlistUpdated",asJson.tracks)
 		
 		if asJson.playbackToken
 			jukebox.Player.load(asJson.playbackToken)
-			
-
+		
+		jukebox.Room.refreshInterval = setInterval(() ->
+			jukebox.Room.refreshPlaylist()
+		,5000)
+		
+		retFunc
+			roomid: asJson.roomid
+			tracks: asJson.tracks
+			name: asJson.name
+	refreshPlaylist: () ->
+		await jukebox.post "room/getplaylist", {roomid: jukebox.Room.currentRoomId}, defer ret
+		jukebox.trigger("playlistUpdated",ret)
+		
+		
 	create: (opts, retFunc) ->
 		if !jukebox.User.currentUserId
 			await jukebox.User.create defer newUserObj
@@ -147,6 +158,10 @@ jukebox.Room =
 		
 	queueTrack: (trackid, retFunc) ->
 		await jukebox.post "room/queuetrack", {trackid: trackid}, defer ret
+		
+		console.log(ret)
+		if (ret.success == false && ret.reason == "alreadyvoted")
+			alert("You already voted for this track!")
 		
 		retFunc()
 		
@@ -169,14 +184,12 @@ jukebox.Player =
 	currentTrackId: null
 	changePending: false
 	load: (playbackToken) ->
-		console.log "loading " + playbackToken
 		$('#api').bind 'ready.rdio', () ->
 			jukebox.Player.playerLoaded = true
 			jukebox.bind("playlistUpdated",jukebox.Player.updatePlaylist)
 			jukebox.Player.changePending = true
 			$(this).rdio().play(jukebox.Player.playlistData[0].trackid);
-			
-			
+				
 			if jukebox.Player.pendingData
 				jukebox.Player.updatePlaylist(jukebox.Player.pendingData)
 	        #$(this).rdio().play(asJson.tracks[0].trackid);
@@ -185,7 +198,6 @@ jukebox.Player =
 			jukebox.Player.lastPlayState = ps	
 	
 		$('#api').bind 'playingTrackChanged.rdio', (e,playingTrack) ->
-			console.log ["track",playingTrack]
 			if playingTrack != null && playingTrack.key == jukebox.Player.currentTrackId
 				console.log "sametrack"
 				return;
@@ -209,7 +221,6 @@ jukebox.Player =
 				$('#api').rdio().seek(playingTrack.duration - 10)
 				#$("#api").rdio().next()
 				
-			console.log "sdfsdf"
 			await jukebox.post "room/updatecurrenttrack", {trackid: playingTrack.key, oldTrack: jukebox.Player.currentTrackId}, defer newTracks, d
 			
 			jukebox.Player.currentTrackId = playingTrack.key
@@ -217,14 +228,18 @@ jukebox.Player =
 			
 			console.log [newTracks, d]
 			
-			#jukebox.trigger("playlistUpdated",newTracks)
-			
+			jukebox.trigger("playlistUpdated",newTracks)
+				
 			
 			
 		$('#api').rdio(playbackToken)
 	updatePlaylist: (playlist) ->
 		console.log "playlist"
 		jukebox.Player.playlistData = playlist
+		
+		if jukebox.Player.lastPlayState == 2
+			$(this).rdio().play(playlist[0].trackid);
+		
 		
 doRemote = (url, data, retFunc, t) ->
 	$.ajax

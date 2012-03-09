@@ -1,62 +1,110 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<style type="text/css">
-			img.albumart {
-				width: 40px;
-			}
+			<link rel="stylesheet"  href="js/jqm/jquery.mobile.structure-1.1.0-rc.1.min"/>
+			<link rel="stylesheet"  href="js/jqm/jquery.mobile-1.1.0-rc.1.css" />
+			<link rel="stylesheet"  href="extras.css" />
+			<meta name="apple-mobile-web-app-capable" content="yes" />
+			<meta names="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+			<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+			<meta charset="utf-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<title>jukeMob</title>
+			<script src="js/jquery.js"></script>
+			<script src="js/cookies.js"></script>
+			<script>
+				$(document).bind("mobileinit", function(){
+				  $.mobile.defaultPageTransition = "slide"
+					$.mobile.listview.prototype.options.filterPlaceholder = "Search for..."
+				});
 			
-			body {
-				margin-bottom: 50px;
-			}
-		</style>
+			</script>
+			<script src="js/jqm/jquery.mobile-1.1.0-rc.1.js"></script>
+			
 	</head>
-	
 	<body>
-		<div id="divCreateOrJoinRoom">
-			<h4>Create room</h4>
-			<label for="roomname">Room name:</label><input type="text" id="roomname"/>
-			<button id="createRoom">Create Room</button>
-			<h4>Join a room:</h4>
-			<ul id="ulExistingRooms">
-				<li>Loading...</li>
-			</ul>
-		</div>
-		
-		
-		<div id="divRoom" style="display:none">
-			<h4 id="h4roomtitle"></h4>
-			<p>You have <span id="totalcredits">x</span> credits remaining</p>
-			<h5>Now playing</h5>
-			<ul id="nowplaying">
-				
-			</ul>
-			<h5>Upcoming tracks</h5>
-			<ul id="upcomingtracks">
-				<li>None yet! Add yours.</li>
-			</ul>
+		<div data-role="page" id="home">
+			<div data-role="header">
+					<h1>jukeMob</h1>
+				</div><!-- /header -->
 			
-			<form id="search" method="POST">
-				<h4>Add your own</h4>
-				<input type="text" name="search" id="txtSearch"/>
-				<input type="submit" name="submit" id="btnSubmit"/>
-			</form>
-			<ul id="searchresults">
-			</ul>
+			<div data-role="content">
+				<a href="#create" data-role="button">Create a room</a>
+				<a href="#join" data-role="button">Join a room</a>
+			</div>
+		</div>
+		<div data-role="page" id="create">
+			<div data-role="header">
+				<h1>Create a room</h1>
+			</div>
+			<div data-role="content">
+				<p>Creating a room currently requires you to have a rdio.com account and Flash support on your browser. For this reason
+					you can't host a room with an iPhone yet, sorry! You can join other rooms and vote, though.</p>
+				<a href="" data-role="button" id="lnkRdio">Log in with Rdio</a>
+				<div id="divCreateFields" style="display:none">
+					<label for="basic">Room name:</label>
+				    <input type="text" name="roomname" id="roomname" value=""  />
+				<a href="" data-role="button" id="lnkCreateRoom">Create room</a>
+				</div>
+			</div>
 		</div>
 		
-		<div id="player">
+		<div data-role="page" id="join">
+			<div data-role="header" data-position="fixed" >
+				<a href="#home" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse"></a>
+				<h1>Join a room</h1>
+			</div>
+			<div data-role="content">
+				<ul data-role="listview" id="ulExistingRooms">
+					
+				</ul>
+			</div>
 		</div>
 		
+		<div data-role="page" id="room">
+			<div data-role="header" data-position="fixed" >
+				<a href="#join" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse"></a>
+				<h1 id="roomtitle">Loading...</h1>
+				<a href="#search" data-icon="plus">Add</a>
+				
+			</div>
+			<div data-role="content">
+				<div class="album dark">
+					<img class="albumart" id="albumart"/>
+					<h3 id="songtitle"></h3>
+					<h4 id="artist"></h4>
+				</div>
+				<ul data-role="listview" id="ulUpcomingTracks" class="tracklist">
+					
+				</ul>
+				
+				
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<div class="footerbar">You have <img src="coin.png" class="coin"/><span class="creditcount"></span> credits left</div>
+				</div>
+		</div>
+		<div data-role="page" id="search">
+			<div data-role="header" data-position="fixed">
+					<a href="#room" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse"></a>
+				<h1>Add a track</h1>
+			</div>
+			<div data-role="content">
+				<ul data-role="listview" id="ulTrackSearch" data-filter="true" class="tracklist">
+				
+				</ul>
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<div class="footerbar">You have <img src="coin.png" class="coin"/><span class="creditcount"></span> credits left</div>
+				</div>
+		</div>
 		
-		<script src="js/jquery.js"></script>
+		<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+		
 		<script src="js/jukebox.js"></script>
-		<script src="js/testnew.js"></script>
-		
-		<script src="js/swfobject.js"></script>
-		<script src="js/jquery.rdio.min.js"></script>
-		<div id="api"></div>
+		<script src="js/juke.js"></script>
+			<script src="js/swfobject.js"></script>
+			<script src="js/jquery.rdio.min.js"></script>
+			<div id="api"></div>
 	</body>
-	
-	
 </html>
