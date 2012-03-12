@@ -93,9 +93,6 @@ $(document).ready(function() {
 
 $("#ulExistingRooms").delegate("a", "click", function(e) {
 	e.preventDefault()
-	
-	
-	return;
 	var roomId = $(this).attr("data-roomid");
 	if (Jukebox.User.currentUserId == null) {
 		Jukebox.User.create(function() {

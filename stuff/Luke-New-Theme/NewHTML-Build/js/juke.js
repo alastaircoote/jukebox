@@ -1,33 +1,7 @@
-var orientationchange = function() {
-	window.scrollTo(0, 0);
-}
-
-
-window.onorientationchange = orientationchange;
-
-
-
-
-
-if (1==2 && window.devicePixelRatio && window.innerHeight < 460) {
-	$("#addasapp").show();
-	$("#actualapp").hide();
-	window.scrollTo(0, 0);
-	$("body").bind("touchstart", function(e) {
-	//	e.preventDefault();
-	})
-}
-
-$("body").bind("touchstart", function(e) {
-	//e.preventDefault();
-	//e.stopPropagation();
-})
-
- 
 Jukebox.init();
 $(document).ready(function() {
 	setTimeout(function () {
-	//  window.scrollTo(0, 1);
+	  window.scrollTo(0, 1);
 	}, 1000);
 })
 if (window.location.search) {
@@ -62,7 +36,7 @@ $("#create").bind("pageinit",function() {
 
 $(window).bind("scroll", function() {
 	if ($(window).scrollTop() == 0) {
-	//	$(window).scrollTop(1)
+		$(window).scrollTop(1)
 	}
 })
 
@@ -94,6 +68,7 @@ var joinRoom= function(roomid) {
 		currentRoomId = room.roomid;
 		$("#roomtitle").html(room.name)
 		$.mobile.changePage("#room")
+		console.log(["isroom",room])
 		$.mobile.hidePageLoadingMsg();
 	})
 }
@@ -116,36 +91,22 @@ $("#room").bind("pageshow", function() {
 	}
 })
 
-var lastCreditCount = 10000;
-
 Jukebox.bind("creditChange", function(credits) {
 	$(".creditcount").html(credits)
-	if (credits > lastCreditCount) {
-		alert("Whoa! You got more credits. Way to go, buddy.")
-	}
-	lastCreditCount = credits;
 })
 
-var template = "<li data-icon='$7'><a data-trackid='$5' data-objtype='$8' data-playlistitemid='$6' href=''><div class='votes'>$4<img src='coin.png'/></div><img src='$3'/><div class='title'>$1</div><div class='subtitle'>$2</div></a></li>";
+var template = "<li data-icon='none'><a data-trackid='$5' data-playlistitemid='$6' href=''><div class='votes'>$4<img src='coin.png'/></div><img src='$3'/><div class='title'>$1</div><div class='subtitle'>$2</div></a></li>";
 
 var trackToLi = function(track) {
 	if (track.playstatus == 1) return;
-	
-		var thisInstance = template
-				.replace("$1",track.title)
-				.replace("$3",track.image)
-				.replace("$4",track.credits)
-				.replace("$5",track.trackid)
-				.replace("$6", track.playlistitemid)
-				//.replace("$7","arrow-r")
-				.replace("$8",track.type)
-		if (track.type != "r") {
-			thisInstance = thisInstance.replace("$2",track.artist)
-		} else {
-			thisInstance = thisInstance.replace("$2","Artist")
-		}
-		
-		var li = $(thisInstance);
+	var li = $(template
+			.replace("$1",track.title)
+			.replace("$2",track.artist)
+			.replace("$3",track.image)
+			.replace("$4",track.credits)
+			.replace("$5",track.trackid)
+			.replace("$6", track.playlistitemid)
+		);
 		if (track.credits == null) {
 			$("div.votes",li).remove();
 		}
@@ -160,13 +121,9 @@ Jukebox.bind("playlistUpdated", function(data) {
 	}
 
 	$("#albumart").attr("src",data[0].image)
-	if (data[0].playstatus != 1) {
-		$("#songtitle").html("PAUSED");
-		$("#artist").html("")
-	} else {
-		$("#songtitle").html(data[0].title)
-		$("#artist").html(data[0].artist)
-	}
+	$("#songtitle").html(data[0].title)
+	$("#artist").html(data[0].artist)
+	
 	
 	for(var x=1;x<data.length;x++) {
 		var track = data[x]
@@ -185,21 +142,17 @@ var searchTimeout
 
 
 var doSearch = function(text) {
-	if (text.length == 1) {
-		return;
-	}
+	console.log(text)
 	if (text.length < 4) {
-	//	alert("too short")
-	//	return;
+		alert("too short")
+		return;
 	}
 	Jukebox.Tracks.search(text, function(results) {
 		$("#ulTrackSearch").empty();
 		for(var x=0;x<results.length;x++) {
 			var track = results[x];
 			var newTrack = trackToLi(track);
-			if (newTrack.attr("data-icon") == "") {
-				newTrack.attr("data-icon","plus")
-			} 
+			newTrack.attr("data-icon","plus")
 			$("#ulTrackSearch").append(newTrack)
 			
 		}
@@ -209,32 +162,19 @@ var doSearch = function(text) {
 }
 
 $("#join").bind("pageinit", function() {
-	$("#ulExistingRooms").delegate("a","tap", function() {
+	$("#ulExistingRooms").delegate("a","click", function() {
 
 		Cookie.set("currentRoom",$(this).attr("data-roomid"));
 	})
 })
 
-var shownInstructions = false;
-
-$("#room").bind("pageshow", function() {
-	console.log("Shown")
-	if (shownInstructions) return;
-	
-	alert("Welcome to the JukeMob room! Tap a track already in the queue to donate a credit and move it up the queue, or click the 'add' button to choose your own song.")
-	shownInstructions = true;
-})
-
-
 
 $("#room").bind("pageinit", function() {
 	$("#ulUpcomingTracks").delegate("a", "click", function(e) {
 		e.preventDefault();
-		$.mobile.showPageLoadingMsg();
 		Jukebox.Room.queueTrack($(this).attr("data-trackid"), function(data) {
 			console.log(data)
 			// song was successfully queued
-			$.mobile.hidePageLoadingMsg();
 		});
 	})
 })
@@ -242,28 +182,18 @@ $("#room").bind("pageinit", function() {
 $("#search").bind("pageinit", function() {
 	$("#ulTrackSearch").delegate("a", "click", function(e) {
 		e.preventDefault();
-		$.mobile.showPageLoadingMsg();
-		if ($(this).attr("data-objtype") == "r") {
-			Jukebox.Tracks.searchAlbums($(this).attr("data-trackid"), function(results) {
-				
-			});
-			return;
-		}
 		Jukebox.Room.queueTrack($(this).attr("data-trackid"), function() {
 			$.mobile.changePage("#room",{reverse:true})
-			$.mobile.hidePageLoadingMsg();
 		});
 	})
 })
 
-$("#search").bind("pagebeforeshow", function() {
-	$("#ulTrackSearch").empty();
-	$(".ui-input-search input").val("");
-})
-
 
 $("#search").bind("pageinit", function() {
-
+	$("#ulTrackSearch").listview('option', 'filterCallback', function(val,test) {
+		console.log ([val,test])
+	})
+	console.log($(".ui-input-search input"))
 	$(".ui-input-search input").bind("keypress",function() {
 		clearTimeout(searchTimeout);
 		var text = $(this).val();

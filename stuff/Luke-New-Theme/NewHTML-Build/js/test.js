@@ -45,7 +45,7 @@
 
   (function(__iced_k) {
     __iced_deferrals = new iced.Deferrals(__iced_k, {
-      filename: "/Users/alastair/Projects/jukebox/stuff/Luke-New-Theme/NewHTML-Build/js/test.iced"
+      filename: "/Users/alastair/Projects/jukebox/html/js/test.iced"
     });
     Jukebox.User.rdioLogin(__iced_deferrals.defer({
       assign_fn: (function() {
@@ -60,7 +60,7 @@
     $("#info").append($("<p>Checking for user</p>"));
     (function(__iced_k) {
       __iced_deferrals = new iced.Deferrals(__iced_k, {
-        filename: "/Users/alastair/Projects/jukebox/stuff/Luke-New-Theme/NewHTML-Build/js/test.iced"
+        filename: "/Users/alastair/Projects/jukebox/html/js/test.iced"
       });
       Jukebox.User.create(__iced_deferrals.defer({
         assign_fn: (function() {
@@ -79,7 +79,7 @@
       }
       (function(__iced_k) {
         __iced_deferrals = new iced.Deferrals(__iced_k, {
-          filename: "/Users/alastair/Projects/jukebox/stuff/Luke-New-Theme/NewHTML-Build/js/test.iced"
+          filename: "/Users/alastair/Projects/jukebox/html/js/test.iced"
         });
         Jukebox.Room.join(1, __iced_deferrals.defer({
           assign_fn: (function() {
@@ -101,7 +101,7 @@
           searchFor = $("#txtSearch").val();
           __iced_deferrals = new iced.Deferrals(__iced_k, {
             parent: ___iced_passed_deferral,
-            filename: "/Users/alastair/Projects/jukebox/stuff/Luke-New-Theme/NewHTML-Build/js/test.iced"
+            filename: "/Users/alastair/Projects/jukebox/html/js/test.iced"
           });
           Jukebox.Tracks.search(searchFor, __iced_deferrals.defer({
             assign_fn: (function() {

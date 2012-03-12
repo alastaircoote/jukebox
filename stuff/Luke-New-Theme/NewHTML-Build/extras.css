@@ -1,5 +1,5 @@
 body {
- /* height: 480px;*/
+  height: 480px;
 }
 .album {
   background: #444;
@@ -13,8 +13,12 @@ body {
   float: left;
   width: 100px;
   height: 100px;
-  border: solid 1px #cccccc;
+  border: solid 1px #000;
   margin-right: 15px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  color: #000;
 }
 .album h3 {
   margin: 0;
@@ -78,41 +82,38 @@ body {
   margin-left: 5px;
 }
 
-.ui-icon-juke-spinner {
-	background-image: url("spinner.gif");
+.ui-header {
+	background: #222 url('menubar-bg.jpg') repeat-x left top;
+	height: 44px;
 }
 
-body {
-	margin:0;
-	padding:0;
-}
-#addasapp {
-	background:#393A3A;
-	margin:0;
-	padding:0;
-	height:420px;
-	font-family: Helvetica;
-	position:relative;
+.ui-title {
+	color: #ffde16;
+	font-size: 18px;
+	line-height: 44px;
+	margin: 0;
+	text-shadow: 0px -1px 1px rgba(0,0,0,0.9);
 }
 
-#appinstall {
-	width:277px;
-	height: 156px;
-	background:url("bubble.png") no-repeat;
-	position: absolute;
-	left: 50%;
-	margin-left:-139px;
-	bottom: 10px;
+.ui-header .ui-btn-right {
+	top: 6px;
 }
 
-#appinstall .inner {
-	padding: 15px;
-	text-align: center;
-	font-size: 14px;
+.ui-header .ui-btn-left {
+	top: 9px;
 }
 
-#appinstall h3 {
-	margin:0;
-	font-size: 20px;
-	
+
+
+.ui-bar-a {
+	background: #222 url('menubar-bg.jpg') repeat-x left top;
+	color: #ffde16;
 }
+
+
+
+
+
+
+
+

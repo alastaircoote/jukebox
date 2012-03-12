@@ -1,5 +1,5 @@
 jukebox =
-	baseUrl:"http://localhost:3000/"
+	baseUrl:"http://50.16.188.199:3000/"
 	rdioToken:null
 	init: () ->
 		jukebox.User.init()
@@ -23,9 +23,7 @@ jukebox.User =
 			varSplit = document.cookie.split(";")
 			for v in varSplit
 				if v.indexOf("rdioToken") >-1
-					rdio = v.split("rdioToken=")[1]
-					if rdio != "undefined" && rdio != "null"
-						jukebox.rdioToken = v.split("rdioToken=")[1]
+					jukebox.rdioToken = v.split("rdioToken=")[1]
 					break
 					
 					
@@ -120,7 +118,6 @@ jukebox.User =
 jukebox.Room =
 	currentRoomId: null,
 	refreshInterval: null,
-	lastTrackedVersion: null,
 	join: (roomid, retFunc) ->
 		await jukebox.post "room/join", {roomid: roomid, rdioToken: jukebox.rdioToken}, defer ret
 		asJson = ret
@@ -141,19 +138,9 @@ jukebox.Room =
 			roomid: asJson.roomid
 			tracks: asJson.tracks
 			name: asJson.name
-	
 	refreshPlaylist: () ->
 		await jukebox.post "room/getplaylist", {roomid: jukebox.Room.currentRoomId}, defer ret
-		
-		if jukebox.Room.lastTrackedVersion != null && ret.version != jukebox.Room.lastTrackedVersion
-			alert("The JukeMob app has been updated! Press OK to reload the new version.")
-			window.location.reload(true);
-		
-		jukebox.Room.lastTrackedVersion = ret.version
-		
-		jukebox.trigger("playlistUpdated",ret.tracks)
-		
-		jukebox.trigger("creditChange", ret.credits)
+		jukebox.trigger("playlistUpdated",ret)
 		
 		
 	create: (opts, retFunc) ->
@@ -165,6 +152,7 @@ jukebox.Room =
 		
 	list: (retFunc) ->
 		await jukebox.get "room/list",null, defer ret
+
 		retFunc ret
 		
 	queueTrack: (trackid, retFunc) ->
@@ -175,7 +163,7 @@ jukebox.Room =
 			alert("You already voted for this track!")
 		
 		if (ret.success == false && ret.reason == "nocredits")
-			alert("You have no credits left! Want more? Follow @jukemobapp and tweet about us! Then tweet @jukemobapp and give us the code '8122" + jukebox.User.currentUserId + "'")
+			alert("You have no credits left! Want more? Follow @jukemobapp and retweet our launch message! Come find a Jukemobber and give us the code '8122" + jukebox.User.currentUserId + "'")
 		
 		
 		retFunc()
@@ -201,22 +189,15 @@ jukebox.Player =
 	load: (playbackToken) ->
 		console.log "loading rdio"
 		$('#api').bind 'ready.rdio', () ->
-			console.log "rdio loaded" 
+			console.log "rdio loaded"
 			jukebox.Player.playerLoaded = true
 			jukebox.bind("playlistUpdated",jukebox.Player.updatePlaylist)
 			jukebox.Player.changePending = true
 			
+			console.log jukebox.Player.playlistData[0].trackid
 			
 			$(this).rdio().play(jukebox.Player.playlistData[0].trackid);
-			
-			$(window).unload jukebox.Player.stopped
-			
-			stopP = $("<span style='display: block; float:left; background: #000000; text-transform: uppercase; font-size:12px; padding: 3px 6px'>Stop playback</span>")
-			
-			stopP.click jukebox.Player.stopped
-			
-			$("#albumstuff").append stopP
-			
+				
 			if jukebox.Player.pendingData
 				jukebox.Player.updatePlaylist(jukebox.Player.pendingData)
 	        #$(this).rdio().play(asJson.tracks[0].trackid);
@@ -266,8 +247,6 @@ jukebox.Player =
 		
 		if jukebox.Player.lastPlayState == 2
 			$(this).rdio().play(playlist[0].trackid);
-	stopped: () ->
-		jukebox.post "room/trackisstopped", {roomid: jukebox.Room.currentRoomId}
 		
 		
 doRemote = (url, data, retFunc, t) ->

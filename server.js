@@ -22,6 +22,9 @@ app.use(express.session({ secret: "keyboard cat" }));
 
 app.post("/room/join", rooms.join);
 app.post("/room/create", rooms.create);
+
+app.post("/room/trackisstopped", rooms.trackIsStopped);
+
 app.get("/room/list", rooms.list);
 app.post("/room/queuetrack", rooms.queueTrack); 
 app.post("/room/getplaylist", rooms.getPlaylist); 

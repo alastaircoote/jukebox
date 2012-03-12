@@ -7,6 +7,9 @@ this.useOffline = true
 
 this.pgConnectionString = "tcp://jukeuser:juke@127.0.0.1/jukebox"
 
+this.version = 1.1;
+
+
 this.connectDb = (ret) =>
 	await pg.connect this.pgConnectionString, defer client, err
 	
@@ -89,7 +92,7 @@ this.makeRdioProvider = () ->
 	return require('rdio')({
 		rdio_api_key: "4bmgdzt2b27qbktxr4kseyn4",
 		rdio_api_shared: "8U757b9eWC",
-		callback_url: "http://localhost:8000"
+		callback_url: "http://app.jukemob.co/"
 	},oauth)
 	
 

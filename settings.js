@@ -53,6 +53,8 @@
 
   this.pgConnectionString = "tcp://jukeuser:juke@127.0.0.1/jukebox";
 
+  this.version = 1.1;
+
   this.connectDb = function(ret) {
     var client, err, ___iced_passed_deferral, __iced_deferrals;
     ___iced_passed_deferral = iced.findDeferral(arguments);
@@ -69,7 +71,7 @@
             return err = arguments[1];
           };
         })(),
-        lineno: 12
+        lineno: 15
       }));
       __iced_deferrals._fulfill();
     })(function() {
@@ -110,7 +112,7 @@
             return secret = arguments[2];
           };
         })(),
-        lineno: 37
+        lineno: 40
       }));
       __iced_deferrals._fulfill();
     })(function() {
@@ -126,7 +128,7 @@
               return client = arguments[0];
             };
           })(),
-          lineno: 39
+          lineno: 42
         }));
         __iced_deferrals._fulfill();
       })(function() {
@@ -146,7 +148,7 @@
                 return result = arguments[1];
               };
             })(),
-            lineno: 44
+            lineno: 47
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -166,7 +168,7 @@
                   return result = arguments[1];
                 };
               })(),
-              lineno: 49
+              lineno: 52
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -197,7 +199,7 @@
             return client = arguments[0];
           };
         })(),
-        lineno: 61
+        lineno: 64
       }));
       __iced_deferrals._fulfill();
     })(function() {
@@ -217,7 +219,7 @@
               return result = arguments[1];
             };
           })(),
-          lineno: 68
+          lineno: 71
         }));
         __iced_deferrals._fulfill();
       })(function() {
@@ -236,7 +238,7 @@
                 return y = arguments[2];
               };
             })(),
-            lineno: 73
+            lineno: 76
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -257,7 +259,7 @@
                   return result = arguments[1];
                 };
               })(),
-              lineno: 80
+              lineno: 83
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -275,7 +277,7 @@
     return require('rdio')({
       rdio_api_key: "4bmgdzt2b27qbktxr4kseyn4",
       rdio_api_shared: "8U757b9eWC",
-      callback_url: "http://localhost:8000"
+      callback_url: "http://app.jukemob.co/"
     }, oauth);
   };
 
@@ -301,7 +303,7 @@
             return result = arguments[1];
           };
         })(),
-        lineno: 105
+        lineno: 108
       }));
       __iced_deferrals._fulfill();
     })(function() {

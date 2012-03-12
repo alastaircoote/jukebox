@@ -62,6 +62,8 @@ this.join = (req,res) ->
 					text: "SELECT secret from oauth_tokens WHERE token = $1"
 					values:[req.userRdioToken]
 				, defer err, result
+				
+				console.log ["HOST:",req.headers.host.split(":")[0]]
 		
 				await oa.getPlaybackToken req.userRdioToken, result.rows[0].secret, req.headers.host.split(":")[0], defer err, rdiores
 			
@@ -153,7 +155,32 @@ this.getPlaylist = (req,res) ->
 	settings.doGlobals req,res
 	await settings.connectDb defer db
 	await getPlaylist req.body.roomid, db, defer result
-	res.end JSON.stringify result
+	
+	await db.query
+		text:"SELECT totalcredits - (SELECT count(*) from playlistvotes where userid = users.userid) as creditsleft  from users where userid = $1"
+		values:[req.jukeboxUser]
+	, defer err, creditsResult
+	
+	console.log req.jukeboxUser
+	
+	res.end JSON.stringify
+		tracks: result
+		credits: creditsResult.rows[0].creditsleft,
+		version: settings.version
+
+this.trackIsStopped = (req,res) ->
+	settings.doGlobals req,res
+	await settings.connectDb defer db
+	
+	await db.query
+		text:"UPDATE room_playlists set playstatus = 0 where roomid = $1 and playstatus = 1"
+		values:[req.body.roomid]
+	, defer err, updateresult
+	
+	console.log "STOPPED"
+	
+	res.end JSON.stringify true
+
 
 this.queueTrack = (req,res) ->
 	settings.doGlobals req,res
@@ -202,11 +229,12 @@ this.queueTrack = (req,res) ->
 
 	
 	await db.query
-		text:"SELECT playlistitemid from room_playlists where trackid = $1 and roomid = $2"
+		text:"SELECT playlistitemid from room_playlists where trackid = $1 and roomid = $2 and playstatus = 0"
 		values:[trackId, room]
 	, defer err, trackresult
 	
-	console.log err
+	console.log ["tracks",trackresult.rows.length]
+	
 	
 	if trackresult.rows.length == 0
 		await db.query

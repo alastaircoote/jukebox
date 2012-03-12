@@ -175,6 +175,7 @@
               __iced_deferrals._fulfill();
             })(function() {
               var _i, _len, _ref;
+              console.log(results);
               toSendBack = [];
               _ref = JSON.parse(results).result;
               for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -185,7 +186,8 @@
                   artist: track.artist,
                   image: track.icon,
                   title: track.name,
-                  trackid: track.key
+                  trackid: track.key,
+                  type: track.type
                 });
               }
               retString = JSON.stringify(toSendBack);
@@ -207,7 +209,7 @@
                           return result = arguments[1];
                         };
                       })(),
-                      lineno: 70
+                      lineno: 73
                     }));
                     __iced_deferrals._fulfill();
                   })(__iced_k);
@@ -270,7 +272,7 @@
                   return result = arguments[1];
                 };
               })(),
-              lineno: 86
+              lineno: 89
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -335,7 +337,7 @@
                       return result = arguments[1];
                     };
                   })(),
-                  lineno: 105
+                  lineno: 108
                 }));
                 __iced_deferrals._fulfill();
               })(function() {

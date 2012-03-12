@@ -41,7 +41,7 @@
   __iced_k = function() {};
 
   jukebox = {
-    baseUrl: "http://localhost:3000/",
+    baseUrl: "http://50.16.188.199:3000/",
     rdioToken: null,
     init: function() {
       return jukebox.User.init();
@@ -69,17 +69,14 @@
     doneExistingCheck: false,
     currentUserId: null,
     init: function() {
-      var rdio, v, varSplit, _i, _len, _results;
+      var v, varSplit, _i, _len, _results;
       if (document.cookie.indexOf("rdioToken") > -1) {
         varSplit = document.cookie.split(";");
         _results = [];
         for (_i = 0, _len = varSplit.length; _i < _len; _i++) {
           v = varSplit[_i];
           if (v.indexOf("rdioToken") > -1) {
-            rdio = v.split("rdioToken=")[1];
-            if (rdio !== "undefined" && rdio !== "null") {
-              jukebox.rdioToken = v.split("rdioToken=")[1];
-            }
+            jukebox.rdioToken = v.split("rdioToken=")[1];
             break;
           } else {
             _results.push(void 0);
@@ -107,7 +104,7 @@
                   return ret = arguments[0];
                 };
               })(),
-              lineno: 40
+              lineno: 38
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -135,7 +132,7 @@
                 return ret = arguments[0];
               };
             })(),
-            lineno: 49
+            lineno: 47
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -192,7 +189,7 @@
                   return ret = arguments[0];
                 };
               })(),
-              lineno: 96
+              lineno: 94
             }));
             __iced_deferrals._fulfill();
           })(function() {
@@ -222,7 +219,7 @@
                 return ret = arguments[0];
               };
             })(),
-            lineno: 110
+            lineno: 108
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -238,7 +235,6 @@
   jukebox.Room = {
     currentRoomId: null,
     refreshInterval: null,
-    lastTrackedVersion: null,
     join: function(roomid, retFunc) {
       var asJson, ret, ___iced_passed_deferral, __iced_deferrals,
         _this = this;
@@ -258,7 +254,7 @@
               return ret = arguments[0];
             };
           })(),
-          lineno: 125
+          lineno: 122
         }));
         __iced_deferrals._fulfill();
       })(function() {
@@ -295,17 +291,11 @@
               return ret = arguments[0];
             };
           })(),
-          lineno: 147
+          lineno: 142
         }));
         __iced_deferrals._fulfill();
       })(function() {
-        if (jukebox.Room.lastTrackedVersion !== null && ret.version !== jukebox.Room.lastTrackedVersion) {
-          alert("The JukeMob app has been updated! Press OK to reload the new version.");
-          window.location.reload(true);
-        }
-        jukebox.Room.lastTrackedVersion = ret.version;
-        jukebox.trigger("playlistUpdated", ret.tracks);
-        return jukebox.trigger("creditChange", ret.credits);
+        return jukebox.trigger("playlistUpdated", ret);
       });
     },
     create: function(opts, retFunc) {
@@ -326,7 +316,7 @@
                   return newUserObj = arguments[0];
                 };
               })(),
-              lineno: 162
+              lineno: 149
             }));
             __iced_deferrals._fulfill();
           })(__iced_k);
@@ -348,7 +338,7 @@
                 return ret = arguments[0];
               };
             })(),
-            lineno: 163
+            lineno: 150
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -372,7 +362,7 @@
               return ret = arguments[0];
             };
           })(),
-          lineno: 167
+          lineno: 155
         }));
         __iced_deferrals._fulfill();
       })(function() {
@@ -397,7 +387,7 @@
               return ret = arguments[0];
             };
           })(),
-          lineno: 172
+          lineno: 160
         }));
         __iced_deferrals._fulfill();
       })(function() {
@@ -406,7 +396,7 @@
           alert("You already voted for this track!");
         }
         if (ret.success === false && ret.reason === "nocredits") {
-          alert("You have no credits left! Want more? Follow @jukemobapp and tweet about us! Then tweet @jukemobapp and give us the code '8122" + jukebox.User.currentUserId + "'");
+          alert("You have no credits left! Want more? Follow @jukemobapp and retweet our launch message! Come find a Jukemobber and give us the code '8122" + jukebox.User.currentUserId + "'");
         }
         retFunc();
         jsoned = ret;
@@ -435,7 +425,7 @@
               return ret = arguments[0];
             };
           })(),
-          lineno: 191
+          lineno: 179
         }));
         __iced_deferrals._fulfill();
       })(function() {
@@ -454,16 +444,12 @@
     load: function(playbackToken) {
       console.log("loading rdio");
       $('#api').bind('ready.rdio', function() {
-        var stopP;
         console.log("rdio loaded");
         jukebox.Player.playerLoaded = true;
         jukebox.bind("playlistUpdated", jukebox.Player.updatePlaylist);
         jukebox.Player.changePending = true;
+        console.log(jukebox.Player.playlistData[0].trackid);
         $(this).rdio().play(jukebox.Player.playlistData[0].trackid);
-        $(window).unload(jukebox.Player.stopped);
-        stopP = $("<span style='display: block; float:left; background: #000000; text-transform: uppercase; font-size:12px; padding: 3px 6px'>Stop playback</span>");
-        stopP.click(jukebox.Player.stopped);
-        $("#albumstuff").append(stopP);
         if (jukebox.Player.pendingData) {
           return jukebox.Player.updatePlaylist(jukebox.Player.pendingData);
         }
@@ -511,7 +497,7 @@
                 return d = arguments[1];
               };
             })(),
-            lineno: 252
+            lineno: 233
           }));
           __iced_deferrals._fulfill();
         })(function() {
@@ -528,11 +514,6 @@
       if (jukebox.Player.lastPlayState === 2) {
         return $(this).rdio().play(playlist[0].trackid);
       }
-    },
-    stopped: function() {
-      return jukebox.post("room/trackisstopped", {
-        roomid: jukebox.Room.currentRoomId
-      });
     }
   };
 

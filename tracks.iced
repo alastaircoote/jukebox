@@ -48,7 +48,9 @@ this.search = (req,res) ->
 
 	
 	await rdio.api token, secret, {method:"searchSuggestions", query: req.param("search"), types:"Track"}, defer err, results
-		
+	
+	console.log results
+	
 	toSendBack = []
 	for track in JSON.parse(results).result
 		console.log track.canStream
@@ -59,6 +61,7 @@ this.search = (req,res) ->
 			image: track.icon
 			title: track.name
 			trackid: track.key
+			type: track.type
 		
 	retString = JSON.stringify toSendBack
 			

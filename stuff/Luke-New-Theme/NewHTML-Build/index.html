@@ -1,58 +1,44 @@
 <!DOCTYPE html>
 <html>
 	<head>
+			<meta charset="utf-8">
+			<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1">
+			<meta name="apple-mobile-web-app-capable" content="yes" />
+			<meta names="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 			<link rel="stylesheet"  href="js/jqm/jquery.mobile.structure-1.1.0-rc.1.min"/>
 			<link rel="stylesheet"  href="js/jqm/jquery.mobile-1.1.0-rc.1.css" />
+			<link rel="stylesheet"  href="js/jqm/JukeMob.min.css"/>
 			<link rel="stylesheet"  href="extras.css" />
-			<meta name="apple-mobile-web-app-capable" content="yes" />
-			<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 			<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 			<link rel="apple-touch-icon" href="touch-icon-iphone.png" />
       <link rel="apple-touch-icon" sizes="72x72" href="touch-icon-ipad.png" />
       <link rel="apple-touch-icon" sizes="114x114" href="touch-icon-iphone4.png" />
       <link rel="apple-touch-startup-image" href="startup.png" />
-			<meta charset="utf-8">
-			<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,height=device-height,width=device-width,user-scalable = no">
-			<title>jukeMob</title>
+			<title>JukeMob</title>
 			<script src="js/jquery.js"></script>
 			<script src="js/cookies.js"></script>
 			<script>
 				$(document).bind("mobileinit", function(){
 				  $.mobile.defaultPageTransition = "slide"
-					$.mobile.listview.prototype.options.filterPlaceholder = "Type song title..."
+					$.mobile.listview.prototype.options.filterPlaceholder = "Search for..."
 				});
-
 			
 			</script>
 			<script src="js/jqm/jquery.mobile-1.1.0-rc.1.js"></script>
-			
 	</head>
 	<body>
-		<div id="addasapp" style="display:none">
-			<img src="640x920_new.png" style="height: 460px; width: 320px;"/>
-			<div id="appinstall">
-				<div class="inner">
-				<h3>Install JukeMob</h3>
-				<p>To install JukeMob into your phone, press the center button below and choose "Add to Home Screen"</p>
-				</div>
-			</div>
-		</div>
-		<div id="actualapp">
-		<div data-role="page" id="home" class="homepage" style="background: url(320x460_new.png) no-repeat">
-			<!--<div data-role="header">
-					<h1>jukeMob</h1> 
+		<div data-role="page" id="home">
+			<div data-role="header">
+					<h1>JukeMob</h1>
 				</div><!-- /header -->
 			
 			<div data-role="content">
-				<div style="padding-top:300px">
 				<a href="#create" data-role="button">Create a room</a>
 				<a href="#join" data-role="button">Join a room</a>
-				</div>
 			</div>
 		</div>
 		<div data-role="page" id="create">
 			<div data-role="header">
-				<a href="#home" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse"></a>
 				<h1>Create a room</h1>
 			</div>
 			<div data-role="content">
@@ -87,7 +73,7 @@
 				
 			</div>
 			<div data-role="content">
-				<div class="album dark" id="albumstuff">
+				<div class="album dark">
 					<img class="albumart" id="albumart"/>
 					<h3 id="songtitle"></h3>
 					<h4 id="artist"></h4>
@@ -95,8 +81,6 @@
 				<ul data-role="listview" id="ulUpcomingTracks" class="tracklist">
 					
 				</ul>
-				
-				
 			</div>
 			<div data-role="footer" data-position="fixed">
 				<div class="footerbar">You have <img src="coin.png" class="coin"/><span class="creditcount"></span> credits left</div>
@@ -117,26 +101,10 @@
 				</div>
 		</div>
 		
-		<div data-role="page" id="searchalbum">
-			<div data-role="header" data-position="fixed">
-					<a href="#search" data-icon="arrow-l" data-iconpos="notext" data-direction="reverse"></a>
-				<h1>Albums</h1>
-			</div>
-			<div data-role="content">
-				<ul data-role="listview" id="ulAlbumSearch" data-filter="true" class="tracklist">
-				
-				</ul>
-			</div>
-			<div data-role="footer" data-position="fixed">
-				<div class="footerbar">You have <img src="coin.png" class="coin"/><span class="creditcount"></span> credits left</div>
-				</div>
-		</div>
-		</div>
-		<script src="js/jukebox.js"></script>
-		<script src="js/juke.js"></script>
+			<script src="js/jukebox.js"></script>
+			<script src="js/juke.js"></script>
 			<script src="js/swfobject.js"></script>
 			<script src="js/jquery.rdio.min.js"></script>
 			<div id="api"></div>
-		<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 	</body>
 </html>
