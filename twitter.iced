@@ -10,11 +10,12 @@ opts=
 
 req = https.request opts, (res) ->
 	res.setEncoding('binary') 
+	console.log "Request ready"
 	res.on "data", (d) ->
 		json = JSON.parse(d)
 		processJSON(json)
 
-#req.end()
+req.end()
 
 processJSON = (json)->
 	for hashtag in json.entities.hashtags

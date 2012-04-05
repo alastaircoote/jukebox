@@ -54,12 +54,15 @@
 
   req = https.request(opts, function(res) {
     res.setEncoding('binary');
+    console.log("Request ready");
     return res.on("data", function(d) {
       var json;
       json = JSON.parse(d);
       return processJSON(json);
     });
   });
+
+  req.end();
 
   processJSON = function(json) {
     var db, err, hashtag, result, userid, ___iced_passed_deferral, __iced_deferrals, __iced_k, _i, _len, _ref, _results, _while,
@@ -103,7 +106,7 @@
                     return db = arguments[0];
                   };
                 })(),
-                lineno: 29
+                lineno: 30
               }));
               __iced_deferrals._fulfill();
             })(function() {
@@ -123,7 +126,7 @@
                       return result = arguments[1];
                     };
                   })(),
-                  lineno: 34
+                  lineno: 35
                 }));
                 __iced_deferrals._fulfill();
               })(function() {
