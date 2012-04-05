@@ -90,11 +90,11 @@
     if (req.header("X-RdioToken") !== 'null') {
       req.userRdioToken = req.header("X-RdioToken");
     }
-    if (req.param("X-RdioToken" !== null)) {
+    if (req.param("X-RdioToken") !== null && req.param("X-RdioToken") !== "null") {
       req.userRdioToken = req.param("X-RdioToken");
     }
     req.jukeboxUser = req.header("X-JukeboxUser");
-    if (req.param("X-JukeboxUser" !== null)) {
+    if (req.param("X-JukeboxUser") !== null) {
       req.jukeboxUser = req.param("X-JukeboxUser");
     }
     return ret.contentType("application/json");
