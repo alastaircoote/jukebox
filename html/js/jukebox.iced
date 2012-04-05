@@ -183,7 +183,7 @@ jukebox.Room =
 				twitMsg = "I'm using @jukemobapp to control the playlist at the NYC @startupbus demo day!"
 				#twitMsg = "@jukemobapp " + twitMsg
 				if (aLink)
-					twitMsg += " I just queued up \"{1}\""
+					twitMsg += " I just voted up \"{1}\""
 					hashtag = "jm81" + jukebox.User.currentUserId
 					trackname = $(".subtitle",aLink).html() + " - " + $(".title",aLink).html()
 					msgLen = twitMsg.length + trackname.length + hashtag.length - 1

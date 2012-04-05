@@ -6,10 +6,7 @@ var orientationchange = function() {
 window.onorientationchange = orientationchange;
 
 
-
-
-
-if (1==2 && window.devicePixelRatio && window.innerHeight < 460) {
+if (window.devicePixelRatio && window.innerHeight < 460) {
 	$("#addasapp").show();
 	$("#actualapp").hide();
 	window.scrollTo(0, 0);
@@ -18,11 +15,22 @@ if (1==2 && window.devicePixelRatio && window.innerHeight < 460) {
 	})
 }
 
-$("body").bind("touchstart", function(e) {
-	//e.preventDefault();
+/*$("body").bind("touchmove", function(e) {
+	
+	e.preventDefault();
 	//e.stopPropagation();
 })
 
+$("ul[data-role='listview']").css({
+	height:"300",
+	"-webkit-overflow-scrolling": "touch"
+})
+
+var isListView = false
+$("div[data-role='page']").bind("touchmove", function(e) {
+	e.stopPropagation();
+})
+*/
  
 Jukebox.init();
 $(document).ready(function() {
