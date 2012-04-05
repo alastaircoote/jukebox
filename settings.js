@@ -62,7 +62,7 @@
     (function(__iced_k) {
       __iced_deferrals = new iced.Deferrals(__iced_k, {
         parent: ___iced_passed_deferral,
-        filename: "..\..\settings.iced",
+        filename: "settings.iced",
         funcname: "connectDb"
       });
       pg.connect(_this.pgConnectionString, __iced_deferrals.defer({
@@ -90,13 +90,7 @@
     if (req.header("X-RdioToken") !== 'null') {
       req.userRdioToken = req.header("X-RdioToken");
     }
-    if (req.param("X-RdioToken") !== null && req.param("X-RdioToken") !== "null") {
-      req.userRdioToken = req.param("X-RdioToken");
-    }
     req.jukeboxUser = req.header("X-JukeboxUser");
-    if (req.param("X-JukeboxUser") !== null) {
-      req.jukeboxUser = req.param("X-JukeboxUser");
-    }
     return ret.contentType("application/json");
   };
 
@@ -109,7 +103,7 @@
     (function(__iced_k) {
       __iced_deferrals = new iced.Deferrals(__iced_k, {
         parent: ___iced_passed_deferral,
-        filename: "..\..\settings.iced",
+        filename: "settings.iced",
         funcname: "oauthStart"
       });
       oa.getRequestToken(__iced_deferrals.defer({
@@ -127,7 +121,7 @@
       (function(__iced_k) {
         __iced_deferrals = new iced.Deferrals(__iced_k, {
           parent: ___iced_passed_deferral,
-          filename: "..\..\settings.iced",
+          filename: "settings.iced",
           funcname: "oauthStart"
         });
         _this.connectDb(__iced_deferrals.defer({
@@ -143,7 +137,7 @@
         (function(__iced_k) {
           __iced_deferrals = new iced.Deferrals(__iced_k, {
             parent: ___iced_passed_deferral,
-            filename: "..\..\settings.iced",
+            filename: "settings.iced",
             funcname: "oauthStart"
           });
           client.query({
@@ -163,7 +157,7 @@
           (function(__iced_k) {
             __iced_deferrals = new iced.Deferrals(__iced_k, {
               parent: ___iced_passed_deferral,
-              filename: "..\..\settings.iced",
+              filename: "settings.iced",
               funcname: "oauthStart"
             });
             client.query({
@@ -199,7 +193,7 @@
     (function(__iced_k) {
       __iced_deferrals = new iced.Deferrals(__iced_k, {
         parent: ___iced_passed_deferral,
-        filename: "..\..\settings.iced",
+        filename: "settings.iced",
         funcname: "oauthAccessSwitch"
       });
       self.connectDb(__iced_deferrals.defer({
@@ -215,7 +209,7 @@
       (function(__iced_k) {
         __iced_deferrals = new iced.Deferrals(__iced_k, {
           parent: ___iced_passed_deferral,
-          filename: "..\..\settings.iced",
+          filename: "settings.iced",
           funcname: "oauthAccessSwitch"
         });
         client.query({
@@ -236,7 +230,7 @@
         (function(__iced_k) {
           __iced_deferrals = new iced.Deferrals(__iced_k, {
             parent: ___iced_passed_deferral,
-            filename: "..\..\settings.iced",
+            filename: "settings.iced",
             funcname: "oauthAccessSwitch"
           });
           oa.getAccessToken(req.body.token, result.rows[0].secret, req.body.verifier, __iced_deferrals.defer({
@@ -255,7 +249,7 @@
           (function(__iced_k) {
             __iced_deferrals = new iced.Deferrals(__iced_k, {
               parent: ___iced_passed_deferral,
-              filename: "..\..\settings.iced",
+              filename: "settings.iced",
               funcname: "oauthAccessSwitch"
             });
             client.query({
@@ -300,7 +294,7 @@
     (function(__iced_k) {
       __iced_deferrals = new iced.Deferrals(__iced_k, {
         parent: ___iced_passed_deferral,
-        filename: "..\..\settings.iced",
+        filename: "settings.iced",
         funcname: "getPlaybackToken"
       });
       client.query({
