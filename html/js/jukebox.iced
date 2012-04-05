@@ -298,7 +298,7 @@ jukebox.Player =
 		
 		
 doRemote = (url, data, retFunc, t) ->
-	if window.XDomainRequest
+	if window.XDomainRequest && 1 == 2
 		if (data == null)
 			data = {}
 		data["X-JukeboxUser"] = jukebox.User.currentUserId

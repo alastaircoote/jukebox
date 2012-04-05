@@ -23,13 +23,13 @@ this.doGlobals = (req,ret) ->
 	ret.header("Access-Control-Allow-Headers", "X-JukeboxUser, X-RdioToken")
 	if  req.header("X-RdioToken") != 'null'
 		req.userRdioToken = req.header("X-RdioToken")
-	if req.param("X-RdioToken") != null &&  req.param("X-RdioToken") != "null"
-		req.userRdioToken = req.param "X-RdioToken"
+	#if req.param("X-RdioToken") != null &&  req.param("X-RdioToken") != "null"
+	#	req.userRdioToken = req.param "X-RdioToken"
 		
 	req.jukeboxUser = req.header("X-JukeboxUser")
 	
-	if req.param("X-JukeboxUser") != null
-		req.jukeboxUser = req.param "X-JukeboxUser"
+	#if req.param("X-JukeboxUser") != null
+	#	req.jukeboxUser = req.param "X-JukeboxUser"
 	
 	ret.contentType("application/json")
 	
