@@ -5,7 +5,7 @@ oauth = require("node-oauth").OAuth
 self = this
 this.useOffline = true
 
-this.pgConnectionString = "tcp://jukeuser:juke@127.0.0.1/jukebox"
+this.pgConnectionString = "tcp://jukeuser:juke@localhost/jukebox"
 
 this.version = 1.1;
 
@@ -27,7 +27,7 @@ this.doGlobals = (req,ret) ->
 	#	req.userRdioToken = req.param "X-RdioToken"
 		
 	req.jukeboxUser = req.header("X-JukeboxUser")
-	
+	console.log "user=" + req.jukeboxUser
 	#if req.param("X-JukeboxUser") != null
 	#	req.jukeboxUser = req.param "X-JukeboxUser"
 	

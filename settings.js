@@ -91,6 +91,7 @@
       req.userRdioToken = req.header("X-RdioToken");
     }
     req.jukeboxUser = req.header("X-JukeboxUser");
+    console.log("user=" + req.jukeboxUser);
     return ret.contentType("application/json");
   };
 
