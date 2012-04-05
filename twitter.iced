@@ -21,6 +21,10 @@ processJSON = (json)->
 		if hashtag.text.indexOf("jm") == 0
 			# is a token
 			userid = hashtag.text.substr(4)
+			
+			console.log "Processing user" + userid + " from " + json.user.screen_name
+			
+			
 			await settings.connectDb defer db
 			
 			await db.query

@@ -90,6 +90,7 @@
         (function(__iced_k) {
           if (hashtag.text.indexOf("jm") === 0) {
             userid = hashtag.text.substr(4);
+            console.log("Processing user" + userid + " from " + json.user.screen_name);
             (function(__iced_k) {
               __iced_deferrals = new iced.Deferrals(__iced_k, {
                 parent: ___iced_passed_deferral,
@@ -102,7 +103,7 @@
                     return db = arguments[0];
                   };
                 })(),
-                lineno: 25
+                lineno: 29
               }));
               __iced_deferrals._fulfill();
             })(function() {
@@ -122,7 +123,7 @@
                       return result = arguments[1];
                     };
                   })(),
-                  lineno: 30
+                  lineno: 34
                 }));
                 __iced_deferrals._fulfill();
               })(function() {
