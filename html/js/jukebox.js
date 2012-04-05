@@ -403,7 +403,6 @@
         doTweet = confirm("You have no credits left! You can earn more credits by tweeting about StartupBus and JukeMob (and getting your friends to retweet you!). Do it now?");
         if (doTweet) {
           twitMsg = "I'm using @jukemobapp to control the playlist at the NYC @startupbus demo day!";
-          twitMsg = "@jukemobapp " + twitMsg;
           if (aLink) {
             twitMsg += " I just queued up \"{1}\"";
             hashtag = "jm81" + jukebox.User.currentUserId;
