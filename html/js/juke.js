@@ -70,6 +70,7 @@ $("#join").bind("pageshow", function() {
 	$.mobile.showPageLoadingMsg();
 	Jukebox.Room.list(function(list) {
 		$("#ulExistingRooms").empty()
+		if (typeof list == "string") list = JSON.parse(list)
 		for(var x=0; x<list.length;x++) {
 			
 			var template = "<li><a href='#room' data-roomid='$2'>$1</a></li>"
@@ -218,8 +219,7 @@ $("#join").bind("pageinit", function() {
 var shownInstructions = false;
 
 $("#room").bind("pageshow", function() {
-	console.log("Shown")
-	if (shownInstructions) return;
+		if (shownInstructions) return;
 	
 	alert("Welcome to the JukeMob room! Tap a track already in the queue to donate a credit and move it up the queue, or click the 'add' button to choose your own song.")
 	shownInstructions = true;
@@ -232,10 +232,9 @@ $("#room").bind("pageinit", function() {
 		e.preventDefault();
 		$.mobile.showPageLoadingMsg();
 		Jukebox.Room.queueTrack($(this).attr("data-trackid"), function(data) {
-			console.log(data)
 			// song was successfully queued
 			$.mobile.hidePageLoadingMsg();
-		});
+		},$(this));
 	})
 })
 
@@ -252,7 +251,7 @@ $("#search").bind("pageinit", function() {
 		Jukebox.Room.queueTrack($(this).attr("data-trackid"), function() {
 			$.mobile.changePage("#room",{reverse:true})
 			$.mobile.hidePageLoadingMsg();
-		});
+		},$(this));
 	})
 })
 

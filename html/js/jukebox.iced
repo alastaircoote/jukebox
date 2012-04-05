@@ -1,5 +1,5 @@
 jukebox =
-	baseUrl:"http://localhost:3000/"
+	baseUrl:"http://app.jukemob.co:3000/" 
 	rdioToken:null
 	init: () ->
 		jukebox.User.init()
@@ -15,7 +15,7 @@ jukebox =
 				func(data)
 		
 jukebox.User =
-	
+	currentCredits:-1
 	doneExistingCheck: false
 	currentUserId:null
 	init: ()->
@@ -53,8 +53,9 @@ jukebox.User =
 		
 		date = new Date()
 		date.setTime(date.getTime + (30*24*60*60*1000))
-		
+		console.log ret
 		document.cookie = "currentUserId=" + newUserId + "; expires=" + date.toGMTString() + "; path=/"	
+		jukebox.User.currentUserId = newUserId
 		
 		retFunc
 			userid: newUserId
@@ -67,7 +68,9 @@ jukebox.User =
 		
 		#Remove following cookies
 		userId = userId.split(";")[0]
-		this.currentUserId = userId
+		console.log userId
+		if (userId != "undefined" && typeof userId != "undefined")
+			this.currentUserId = userId
 	
 	rdioLogin: (retFunc)->
 		if window.location.search != null && window.location.search != ""
@@ -121,7 +124,10 @@ jukebox.Room =
 	currentRoomId: null,
 	refreshInterval: null,
 	lastTrackedVersion: null,
+	currentTrackList:null,
 	join: (roomid, retFunc) ->
+	
+		
 		await jukebox.post "room/join", {roomid: roomid, rdioToken: jukebox.rdioToken}, defer ret
 		asJson = ret
 		this.currentRoomId = asJson.roomid
@@ -150,7 +156,7 @@ jukebox.Room =
 			window.location.reload(true);
 		
 		jukebox.Room.lastTrackedVersion = ret.version
-		
+		jukebox.Room.currentTrackList = ret.tracks
 		jukebox.trigger("playlistUpdated",ret.tracks)
 		
 		jukebox.trigger("creditChange", ret.credits)
@@ -167,16 +173,37 @@ jukebox.Room =
 		await jukebox.get "room/list",null, defer ret
 		retFunc ret
 		
-	queueTrack: (trackid, retFunc) ->
+	queueTrack: (trackid, retFunc, aLink) ->
+		
+		if (jukebox.User.currentCredits == 0)
+			console.log aLink
+			doTweet = confirm("You have no credits left! You can earn more credits by tweeting about StartupBus and JukeMob (and getting your friends to retweet you!). Do it now?")
+			if (doTweet)
+			
+				twitMsg = "I'm at the @startupbus NYC demo day, controlling the playlist with @jukemob!"
+				twitMsg = "@jukemob " + twitMsg
+				if (aLink)
+					twitMsg += " I just queued up \"{1}\""
+					hashtag = "jm81" + jukebox.User.currentUserId
+					trackname = $(".subtitle",aLink).html() + " - " + $(".title",aLink).html()
+					msgLen = twitMsg.length + trackname.length + hashtag.length - 1
+					if (msgLen > 140)
+						diff = msgLen - 140
+						trackname = trackname.substr(0,trackname.length - diff - 3) + "..."
+					twitMsg = twitMsg.replace("{1}",trackname)
+					
+			
+				window.open "https://twitter.com/intent/tweet?text=" + encodeURI(twitMsg) + "&hashtags=jm81" + jukebox.User.currentUserId, "tweetwindow", "width=550,height=420"
+		 
 		await jukebox.post "room/queuetrack", {trackid: trackid}, defer ret
 		
 		console.log(ret)
 		if (ret.success == false && ret.reason == "alreadyvoted")
 			alert("You already voted for this track!")
 		
-		if (ret.success == false && ret.reason == "nocredits")
-			alert("You have no credits left! Want more? Follow @jukemobapp and tweet about us! Then tweet @jukemobapp and give us the code '8122" + jukebox.User.currentUserId + "'")
-		
+		#if (ret.success == false && ret.reason == "nocredits")
+			#alert("You have no credits left! Want more? Follow @jukemobapp and tweet about us! Then tweet @jukemobapp and give us the code '8122" + jukebox.User.currentUserId + "'")
+			
 		
 		retFunc()
 		
@@ -271,14 +298,40 @@ jukebox.Player =
 		
 		
 doRemote = (url, data, retFunc, t) ->
-	$.ajax
-		url: jukebox.baseUrl + url
-		data: data
-		type: t
-		headers:
-			"X-JukeboxUser": jukebox.User.currentUserId,
-			"X-RdioToken": jukebox.rdioToken
-		success: retFunc
+	if window.XDomainRequest
+		if (data == null)
+			data = {}
+		data["X-JukeboxUser"] = jukebox.User.currentUserId
+		data["X-RdioToken"] = jukebox.rdioToken
+		dataString = []
+		keys = []
+		keys.push(d) for d of data
+		for key in keys
+			
+			dataString.push key + "=" + data[key]
+	
+		xReq = new XDomainRequest()
+		alert(t)
+		xReq.onload = (ret)->
+			retFunc(JSON.parse(xReq.responseText))
+		if (t == "GET")
+			xReq.open "get", jukebox.baseUrl + url + "?" + dataString.join("&")
+			xReq.send()
+		else
+			xReq.open "post", jukebox.baseUrl + url
+			xReq.send(dataString.join("&"))
+	else
+		$.ajax
+			url: jukebox.baseUrl + url
+			data: data
+			type: t
+			headers:
+				"X-JukeboxUser": jukebox.User.currentUserId,
+				"X-RdioToken": jukebox.rdioToken
+			success: (ret) ->
+				if (typeof ret == "string")
+					ret = JSON.parse(ret)
+				retFunc(ret)
 
 jukebox.get = (url,data,retFunc) ->
 	doRemote url, data, retFunc, "GET"
@@ -287,3 +340,7 @@ jukebox.post = (url,data,retFunc) ->
 	doRemote url, data, retFunc, "POST"
 
 window.Jukebox = jukebox
+
+
+jukebox.bind "creditChange", (cred)->
+	jukebox.User.currentCredits = cred
