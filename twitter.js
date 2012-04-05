@@ -217,6 +217,4 @@
     "retweeted": false
   };
 
-  processJSON(dummyJson);
-
 }).call(this);

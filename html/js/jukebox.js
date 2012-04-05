@@ -100,7 +100,7 @@
           (function(__iced_k) {
             __iced_deferrals = new iced.Deferrals(__iced_k, {
               parent: ___iced_passed_deferral,
-              filename: "jukebox.iced",
+              filename: "html\js\jukebox.iced",
               funcname: "create"
             });
             jukebox.post("user/checkCredits", {}, __iced_deferrals.defer({
@@ -128,7 +128,7 @@
         (function(__iced_k) {
           __iced_deferrals = new iced.Deferrals(__iced_k, {
             parent: ___iced_passed_deferral,
-            filename: "jukebox.iced",
+            filename: "html\js\jukebox.iced",
             funcname: "create"
           });
           jukebox.post("user/create", {}, __iced_deferrals.defer({
@@ -188,7 +188,7 @@
           (function(__iced_k) {
             __iced_deferrals = new iced.Deferrals(__iced_k, {
               parent: ___iced_passed_deferral,
-              filename: "jukebox.iced",
+              filename: "html\js\jukebox.iced",
               funcname: "rdioLogin"
             });
             jukebox.post("oauthtokenswitch", {
@@ -219,7 +219,7 @@
         (function(__iced_k) {
           __iced_deferrals = new iced.Deferrals(__iced_k, {
             parent: ___iced_passed_deferral,
-            filename: "jukebox.iced",
+            filename: "html\js\jukebox.iced",
             funcname: "rdioLogin"
           });
           $.post(jukebox.baseUrl + "rdioauth", {
@@ -256,7 +256,7 @@
       (function(__iced_k) {
         __iced_deferrals = new iced.Deferrals(__iced_k, {
           parent: ___iced_passed_deferral,
-          filename: "jukebox.iced",
+          filename: "html\js\jukebox.iced",
           funcname: "join"
         });
         jukebox.post("room/join", {
@@ -295,7 +295,7 @@
       (function(__iced_k) {
         __iced_deferrals = new iced.Deferrals(__iced_k, {
           parent: ___iced_passed_deferral,
-          filename: "jukebox.iced",
+          filename: "html\js\jukebox.iced",
           funcname: "refreshPlaylist"
         });
         jukebox.post("room/getplaylist", {
@@ -330,7 +330,7 @@
           (function(__iced_k) {
             __iced_deferrals = new iced.Deferrals(__iced_k, {
               parent: ___iced_passed_deferral,
-              filename: "jukebox.iced",
+              filename: "html\js\jukebox.iced",
               funcname: "create"
             });
             jukebox.User.create(__iced_deferrals.defer({
@@ -350,7 +350,7 @@
         (function(__iced_k) {
           __iced_deferrals = new iced.Deferrals(__iced_k, {
             parent: ___iced_passed_deferral,
-            filename: "jukebox.iced",
+            filename: "html\js\jukebox.iced",
             funcname: "create"
           });
           jukebox.post("room/create", {
@@ -377,7 +377,7 @@
       (function(__iced_k) {
         __iced_deferrals = new iced.Deferrals(__iced_k, {
           parent: ___iced_passed_deferral,
-          filename: "jukebox.iced",
+          filename: "html\js\jukebox.iced",
           funcname: "list"
         });
         jukebox.get("room/list", null, __iced_deferrals.defer({
@@ -402,8 +402,8 @@
         console.log(aLink);
         doTweet = confirm("You have no credits left! You can earn more credits by tweeting about StartupBus and JukeMob (and getting your friends to retweet you!). Do it now?");
         if (doTweet) {
-          twitMsg = "I'm at the @startupbus NYC demo day, controlling the playlist with @jukemob!";
-          twitMsg = "@jukemob " + twitMsg;
+          twitMsg = "I'm using @jukemobapp to control the playlist at the NYC @startupbus demo day!";
+          twitMsg = "@jukemobapp " + twitMsg;
           if (aLink) {
             twitMsg += " I just queued up \"{1}\"";
             hashtag = "jm81" + jukebox.User.currentUserId;
@@ -421,7 +421,7 @@
       (function(__iced_k) {
         __iced_deferrals = new iced.Deferrals(__iced_k, {
           parent: ___iced_passed_deferral,
-          filename: "jukebox.iced",
+          filename: "html\js\jukebox.iced",
           funcname: "queueTrack"
         });
         jukebox.post("room/queuetrack", {
@@ -457,7 +457,7 @@
       (function(__iced_k) {
         __iced_deferrals = new iced.Deferrals(__iced_k, {
           parent: ___iced_passed_deferral,
-          filename: "jukebox.iced",
+          filename: "html\js\jukebox.iced",
           funcname: "search"
         });
         jukebox.get("tracks/search", {
@@ -533,7 +533,7 @@
         (function(__iced_k) {
           __iced_deferrals = new iced.Deferrals(__iced_k, {
             parent: ___iced_passed_deferral,
-            filename: "jukebox.iced"
+            filename: "html\js\jukebox.iced"
           });
           jukebox.post("room/updatecurrenttrack", {
             trackid: playingTrack.key,
@@ -572,7 +572,7 @@
 
   doRemote = function(url, data, retFunc, t) {
     var d, dataString, key, keys, xReq, _i, _len;
-    if (window.XDomainRequest) {
+    if (window.XDomainRequest && 1 === 2) {
       if (data === null) data = {};
       data["X-JukeboxUser"] = jukebox.User.currentUserId;
       data["X-RdioToken"] = jukebox.rdioToken;
