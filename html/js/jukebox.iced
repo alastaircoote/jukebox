@@ -175,7 +175,7 @@ jukebox.Room =
 		
 	queueTrack: (trackid, retFunc, aLink) ->
 		
-		if (jukebox.User.currentCredits == 0)
+		if (jukebox.User.currentCredits <= 0)
 			console.log aLink
 			doTweet = confirm("You have no credits left! You can earn more credits by tweeting about StartupBus and JukeMob (and getting your friends to retweet you!). Do it now?")
 			if (doTweet)
